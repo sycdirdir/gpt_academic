@@ -41,7 +41,7 @@ def get_access_token():
 
     url = "https://aip.baidubce.com/oauth/2.0/token"
     params = {"grant_type": "client_credentials", "client_id": BAIDU_CLOUD_API_KEY, "client_secret": BAIDU_CLOUD_SECRET_KEY}
-    access_token_cache = str(requests.post(url, params=params).json().get("access_token"))
+    access_token_cache = str(requests.post(url, params=params, timeout=60).json().get("access_token"))
     return access_token_cache
     # else:
     #     return access_token_cache
@@ -100,7 +100,7 @@ def generate_from_baidu_qianfan(inputs, llm_kwargs, history, system_prompt):
     headers = {
         'Content-Type': 'application/json'
     }
-    response = requests.request("POST", url, headers=headers, data=payload, stream=True)
+    response = requests.request("POST", url, headers=headers, data=payload, stream=True, timeout=60)
     buffer = ""
     for line in response.iter_lines():
         if len(line) == 0: continue
