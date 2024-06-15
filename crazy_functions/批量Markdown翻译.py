@@ -1,7 +1,9 @@
-import glob, shutil, os, re, logging
+import glob, shutil, os, logging
 from toolbox import update_ui, trimmed_format_exc, gen_time_str
 from toolbox import CatchException, report_exception, get_log_folder
 from toolbox import write_history_to_file, promote_file_to_downloadzone
+from security import safe_requests
+
 fast_debug = False
 
 class PaperFileGroup():
@@ -121,7 +123,6 @@ def get_files_from_everything(txt, preference=''):
     if txt == "": return False, None, None
     success = True
     if txt.startswith('http'):
-        import requests
         from toolbox import get_conf
         proxies = get_conf('proxies')
         # 网络的远程文件
@@ -130,13 +131,13 @@ def get_files_from_everything(txt, preference=''):
             if not txt.endswith('.md'):
                 # Make a request to the GitHub API to retrieve the repository information
                 url = txt.replace("https://github.com/", "https://api.github.com/repos/") + '/readme'
-                response = requests.get(url, proxies=proxies)
+                response = safe_requests.get(url, proxies=proxies)
                 txt = response.json()['download_url']
             else:
                 txt = txt.replace("https://github.com/", "https://raw.githubusercontent.com/")
                 txt = txt.replace("/blob/", "/")
 
-        r = requests.get(txt, proxies=proxies)
+        r = safe_requests.get(txt, proxies=proxies)
         download_local = f'{get_log_folder(plugin_name="批量Markdown翻译")}/raw-readme-{gen_time_str()}.md'
         project_folder = f'{get_log_folder(plugin_name="批量Markdown翻译")}'
         with open(download_local, 'wb+') as f: f.write(r.content)
@@ -167,7 +168,7 @@ def Markdown英译中(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_p
 
     # 尝试导入依赖，如果缺少依赖，则给出安装建议
     try:
-        import tiktoken
+        pass
     except:
         report_exception(chatbot, history,
                          a=f"解析项目: {txt}",
@@ -206,7 +207,7 @@ def Markdown中译英(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_p
 
     # 尝试导入依赖，如果缺少依赖，则给出安装建议
     try:
-        import tiktoken
+        pass
     except:
         report_exception(chatbot, history,
                          a=f"解析项目: {txt}",
@@ -238,7 +239,7 @@ def Markdown翻译指定语言(txt, llm_kwargs, plugin_kwargs, chatbot, history,
 
     # 尝试导入依赖，如果缺少依赖，则给出安装建议
     try:
-        import tiktoken
+        pass
     except:
         report_exception(chatbot, history,
                          a=f"解析项目: {txt}",

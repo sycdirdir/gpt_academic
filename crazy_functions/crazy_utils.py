@@ -2,6 +2,7 @@ from toolbox import update_ui, get_conf, trimmed_format_exc, get_max_token, Sing
 import threading
 import os
 import logging
+from security import safe_requests
 
 def input_clipping(inputs, history, max_token_limit):
     import numpy as np
@@ -349,7 +350,6 @@ def read_and_clean_pdf_text(fp):
     import fitz, copy
     import re
     import numpy as np
-    from colorful import print亮黄, print亮绿
     fc = 0  # Index 0 文本
     fs = 1  # Index 1 字体
     fb = 2  # Index 2 框框
@@ -526,13 +526,11 @@ def get_files_from_everything(txt, type): # type='.md'
 
     success = True
     if txt.startswith('http'):
-        # 网络的远程文件
-        import requests
         from toolbox import get_conf
         from toolbox import get_log_folder, gen_time_str
         proxies = get_conf('proxies')
         try:
-            r = requests.get(txt, proxies=proxies)
+            r = safe_requests.get(txt, proxies=proxies)
         except:
             raise ConnectionRefusedError(f"无法下载资源{txt}，请检查。")
         path = os.path.join(get_log_folder(plugin_name='web_download'), gen_time_str()+type)
@@ -585,7 +583,7 @@ class nougat_interface():
         yield from update_ui_lastest_msg("正在解析论文, 请稍候。进度：正在排队, 等待线程锁...",
                                          chatbot=chatbot, history=history, delay=0)
         self.threadLock.acquire()
-        import glob, threading, os
+        import glob, os
         from toolbox import get_log_folder, gen_time_str
         dst = os.path.join(get_log_folder(plugin_name='nougat'), gen_time_str())
         os.makedirs(dst)

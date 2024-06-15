@@ -5,11 +5,11 @@ from toolbox import write_history_to_file, promote_file_to_downloadzone
 from toolbox import get_conf
 from toolbox import ProxyNetworkActivate
 from colorful import *
-import requests
 import random
 import copy
 import os
 import math
+from security import safe_requests
 
 class GROBID_OFFLINE_EXCEPTION(Exception): pass
 
@@ -20,7 +20,7 @@ def get_avail_grobid_url():
         _grobid_url = random.choice(GROBID_URLS) # 随机负载均衡
         if _grobid_url.endswith('/'): _grobid_url = _grobid_url.rstrip('/')
         with ProxyNetworkActivate('Connect_Grobid'):
-            res = requests.get(_grobid_url+'/api/isalive')
+            res = safe_requests.get(_grobid_url+'/api/isalive')
         if res.text=='true': return _grobid_url
         else: return None
     except:

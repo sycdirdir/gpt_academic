@@ -1,14 +1,14 @@
 from toolbox import CatchException, update_ui
 from .crazy_utils import request_gpt_model_in_new_thread_with_ui_alive, input_clipping
-import requests
 from bs4 import BeautifulSoup
 from request_llms.bridge_all import model_info
+from security import safe_requests
 
 def google(query, proxies):
     query = query # 在此处替换您要搜索的关键词
     url = f"https://www.google.com/search?q={query}"
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36'}
-    response = requests.get(url, headers=headers, proxies=proxies)
+    response = safe_requests.get(url, headers=headers, proxies=proxies)
     soup = BeautifulSoup(response.content, 'html.parser')
     results = []
     for g in soup.find_all('div', class_='g'):
@@ -41,7 +41,7 @@ def scrape_text(url, proxies) -> str:
         'Content-Type': 'text/plain',
     }
     try:
-        response = requests.get(url, headers=headers, proxies=proxies, timeout=8)
+        response = safe_requests.get(url, headers=headers, proxies=proxies, timeout=8)
         if response.encoding == "ISO-8859-1": response.encoding = response.apparent_encoding
     except:
         return "无法连接到该网页"

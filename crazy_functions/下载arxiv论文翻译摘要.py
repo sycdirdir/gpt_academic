@@ -1,8 +1,10 @@
 from toolbox import update_ui, get_log_folder
 from toolbox import write_history_to_file, promote_file_to_downloadzone
 from toolbox import CatchException, report_exception, get_conf
-import re, requests, unicodedata, os
+import re, os
 from .crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
+from security import safe_requests
+
 def download_arxiv_(url_pdf):
     if 'arxiv.org' not in url_pdf:
         if ('.' in url_pdf) and ('/' not in url_pdf):
@@ -44,7 +46,7 @@ def download_arxiv_(url_pdf):
 
     print('下载中')
     proxies = get_conf('proxies')
-    r = requests.get(requests_pdf_url, proxies=proxies)
+    r = safe_requests.get(requests_pdf_url, proxies=proxies)
     with open(file_path, 'wb+') as f:
         f.write(r.content)
     print('下载完成')
@@ -63,7 +65,6 @@ def download_arxiv_(url_pdf):
 
 
 def get_name(_url_):
-    import os
     from bs4 import BeautifulSoup
     print('正在获取文献名！')
     print(_url_)
@@ -78,7 +79,7 @@ def get_name(_url_):
     #     return arxiv_recall[_url_]
 
     proxies = get_conf('proxies')
-    res = requests.get(_url_, proxies=proxies)
+    res = safe_requests.get(_url_, proxies=proxies)
 
     bs = BeautifulSoup(res.text, 'html.parser')
     other_details = {}
@@ -133,8 +134,6 @@ def get_name(_url_):
 def 下载arxiv论文并翻译摘要(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, user_request):
 
     CRAZY_FUNCTION_INFO = "下载arxiv论文并翻译摘要，函数插件作者[binary-husky]。正在提取摘要并下载PDF文档……"
-    import glob
-    import os
 
     # 基本信息：功能、贡献者
     chatbot.append(["函数插件功能？", CRAZY_FUNCTION_INFO])
@@ -142,7 +141,7 @@ def 下载arxiv论文并翻译摘要(txt, llm_kwargs, plugin_kwargs, chatbot, hi
 
     # 尝试导入依赖，如果缺少依赖，则给出安装建议
     try:
-        import bs4
+        pass
     except:
         report_exception(chatbot, history,
             a = f"解析项目: {txt}",

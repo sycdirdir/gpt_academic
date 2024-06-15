@@ -1,7 +1,7 @@
 from toolbox import CatchException, report_exception, get_log_folder, gen_time_str, check_packages
 from toolbox import update_ui, promote_file_to_downloadzone, update_ui_lastest_msg, disable_auto_promotion
 from toolbox import write_history_to_file, promote_file_to_downloadzone, get_conf, extract_archive
-from toolbox import generate_file_link, zip_folder, trimmed_format_exc, trimmed_format_exc_markdown
+from toolbox import generate_file_link, zip_folder, trimmed_format_exc_markdown
 from .crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
 from .crazy_utils import request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency
 from .crazy_utils import read_and_clean_pdf_text
@@ -9,6 +9,7 @@ from .crazy_utils import get_files_from_everything
 from .pdf_fns.parse_pdf import parse_pdf, get_avail_grobid_url, translate_pdf
 from colorful import *
 import os
+from security import safe_requests
 
 
 @CatchException
@@ -123,7 +124,7 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
         chatbot.append((None, f"读取解析: {url} ..."))
         yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
 
-        res = requests.get(url, headers={"Authorization": "Bearer " + doc2x_api_key})
+        res = safe_requests.get(url, headers={"Authorization": "Bearer " + doc2x_api_key})
         md_zip_path = os.path.join(markdown_dir, gen_time_str() + '.zip')
         if res.status_code == 200:
             with open(md_zip_path, "wb") as f: f.write(res.content)
@@ -219,12 +220,11 @@ def 解析PDF_DOC2X(file_manifest, *args):
     return
 
 def 解析PDF_基于GROBID(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, grobid_url):
-    import copy, json
+    import json
     TOKEN_LIMIT_PER_FRAGMENT = 1024
     generated_conclusion_files = []
     generated_html_files = []
     DST_LANG = "中文"
-    from crazy_functions.pdf_fns.report_gen_html import construct_html
     for index, fp in enumerate(file_manifest):
         chatbot.append(["当前进度：", f"正在连接GROBID服务，请稍候: {grobid_url}\n如果等待时间过长，请修改config中的GROBID_URL，可修改成本地GROBID服务。"]); yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
         article_dict = parse_pdf(fp, grobid_url)

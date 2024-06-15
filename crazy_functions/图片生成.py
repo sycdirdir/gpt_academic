@@ -1,5 +1,6 @@
 from toolbox import CatchException, update_ui, get_conf, select_api_key, get_log_folder
 from crazy_functions.multi_stage.multi_stage_utils import GptAcademicState
+from security import safe_requests
 
 
 def gen_image(llm_kwargs, prompt, resolution="1024x1024", model="dall-e-2", quality=None, style=None):
@@ -36,7 +37,7 @@ def gen_image(llm_kwargs, prompt, resolution="1024x1024", model="dall-e-2", qual
     except:
         raise RuntimeError(response.content.decode())
     # 文件保存到本地
-    r = requests.get(image_url, proxies=proxies)
+    r = safe_requests.get(image_url, proxies=proxies)
     file_path = f'{get_log_folder()}/image_gen/'
     os.makedirs(file_path, exist_ok=True)
     file_name = 'Image' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png'
@@ -82,7 +83,7 @@ def edit_image(llm_kwargs, prompt, image_path, resolution="1024x1024", model="da
     except:
         raise RuntimeError(response.content.decode())
     # 文件保存到本地
-    r = requests.get(image_url, proxies=proxies)
+    r = safe_requests.get(image_url, proxies=proxies)
     file_path = f'{get_log_folder()}/image_gen/'
     os.makedirs(file_path, exist_ok=True)
     file_name = 'Image' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png'

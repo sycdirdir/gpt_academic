@@ -1,5 +1,6 @@
 from toolbox import CatchException, update_ui
 from .crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
+from security import safe_requests
 
 
 @CatchException
@@ -50,9 +51,8 @@ def 交互功能模板函数(txt, llm_kwargs, plugin_kwargs, chatbot, history, s
 # ---------------------------------------------------------------------------------
 
 def get_image_page_by_keyword(keyword):
-    import requests
     from bs4 import BeautifulSoup
-    response = requests.get(f'https://wallhaven.cc/search?q={keyword}', timeout=2)
+    response = safe_requests.get(f'https://wallhaven.cc/search?q={keyword}', timeout=2)
     res = "image urls: \n"
     for image_element in BeautifulSoup(response.content, 'html.parser').findAll("img"):
         try:
