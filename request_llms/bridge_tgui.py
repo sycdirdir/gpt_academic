@@ -5,7 +5,6 @@ https://github.com/oobabooga/text-generation-webui/pull/175
 
 import asyncio
 import json
-import random
 import string
 import websockets
 import logging
@@ -13,11 +12,12 @@ import time
 import threading
 import importlib
 from toolbox import get_conf, update_ui
+import secrets
 
 
 def random_hash():
     letters = string.ascii_lowercase + string.digits
-    return ''.join(random.choice(letters) for i in range(9))
+    return ''.join(secrets.choice(letters) for i in range(9))
 
 async def run(context, max_token, temperature, top_p, addr, port):
     params = {

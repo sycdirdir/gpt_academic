@@ -4,7 +4,7 @@ from toolbox import update_ui, update_ui_lastest_msg, disable_auto_promotion, wr
 import logging
 import requests
 import time
-import random
+import secrets
 
 ENABLE_ALL_VERSION_SEARCH = True
 
@@ -44,7 +44,7 @@ def get_meta_information(url, chatbot, history):
 
     if ENABLE_ALL_VERSION_SEARCH:
         def search_all_version(url):
-            time.sleep(random.randint(1,5)) # 睡一会防止触发google反爬虫
+            time.sleep(secrets.SystemRandom().randint(1,5)) # 睡一会防止触发google反爬虫
             response = session.get(url)
             soup = BeautifulSoup(response.text, "html.parser")
 

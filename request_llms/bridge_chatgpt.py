@@ -17,13 +17,14 @@ import logging
 import traceback
 import requests
 import importlib
-import random
 
 # config_private.py放自己的秘密如API和代理网址
 # 读取时首先看是否存在私密的config_private配置文件（不受git管控），如果有，则覆盖原config文件
 from toolbox import get_conf, update_ui, is_any_api_key, select_api_key, what_keys, clip_history
 from toolbox import trimmed_format_exc, is_the_upload_folder, read_one_api_model_name, log_chat
 from toolbox import ChatBotWithCookies
+import secrets
+
 proxies, TIMEOUT_SECONDS, MAX_RETRY, API_ORG, AZURE_CFG_ARRAY = \
     get_conf('proxies', 'TIMEOUT_SECONDS', 'MAX_RETRY', 'API_ORG', 'AZURE_CFG_ARRAY')
 
@@ -372,7 +373,7 @@ def generate_payload(inputs, llm_kwargs, history, system_prompt, stream):
         model = llm_kwargs['llm_model'][len('vllm-'):]
         model, _ = read_one_api_model_name(model)
     if model == "gpt-3.5-random": # 随机选择, 绕过openai访问频率限制
-        model = random.choice([
+        model = secrets.choice([
             "gpt-3.5-turbo",
             "gpt-3.5-turbo-16k",
             "gpt-3.5-turbo-1106",

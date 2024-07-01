@@ -6,10 +6,10 @@ from toolbox import get_conf
 from toolbox import ProxyNetworkActivate
 from colorful import *
 import requests
-import random
 import copy
 import os
 import math
+import secrets
 
 class GROBID_OFFLINE_EXCEPTION(Exception): pass
 
@@ -17,7 +17,7 @@ def get_avail_grobid_url():
     GROBID_URLS = get_conf('GROBID_URLS')
     if len(GROBID_URLS) == 0: return None
     try:
-        _grobid_url = random.choice(GROBID_URLS) # 随机负载均衡
+        _grobid_url = secrets.choice(GROBID_URLS) # 随机负载均衡
         if _grobid_url.endswith('/'): _grobid_url = _grobid_url.rstrip('/')
         with ProxyNetworkActivate('Connect_Grobid'):
             res = requests.get(_grobid_url+'/api/isalive')

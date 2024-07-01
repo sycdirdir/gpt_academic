@@ -1,4 +1,6 @@
 
+import secrets
+
 def check_proxy(proxies):
     import requests
     proxies_https = proxies['https'] if proxies is not None else '无'
@@ -24,8 +26,8 @@ def check_proxy(proxies):
         return result
 
 def _check_with_backup_source(proxies):
-    import random, string, requests
-    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+    import string, requests
+    random_string = ''.join(secrets.SystemRandom().choices(string.ascii_letters + string.digits, k=32))
     try: return requests.get(f"http://{random_string}.edns.ip-api.com/json", proxies=proxies, timeout=4).json()['dns']['geo']
     except: return None
 
