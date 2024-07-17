@@ -2,6 +2,7 @@ from toolbox import update_ui, get_conf, trimmed_format_exc, get_max_token, Sing
 import threading
 import os
 import logging
+from security import safe_command
 
 def input_clipping(inputs, history, max_token_limit):
     import numpy as np
@@ -568,7 +569,7 @@ class nougat_interface():
         from toolbox import ProxyNetworkActivate
         logging.info(f'正在执行命令 {command}')
         with ProxyNetworkActivate("Nougat_Download"):
-            process = subprocess.Popen(command, shell=False, cwd=cwd, env=os.environ)
+            process = safe_command.run(subprocess.Popen, command, shell=False, cwd=cwd, env=os.environ)
         try:
             stdout, stderr = process.communicate(timeout=timeout)
         except subprocess.TimeoutExpired:
