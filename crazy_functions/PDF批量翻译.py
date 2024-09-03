@@ -75,8 +75,8 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
         url = "https://api.doc2x.noedgeai.com/api/token/refresh"
         res = requests.post(
             url,
-            headers={"Authorization": "Bearer " + doc2x_api_key}
-        )
+            headers={"Authorization": "Bearer " + doc2x_api_key}, 
+        timeout=60)
         res_json = []
         if res.status_code == 200:
             decoded = res.content.decode("utf-8")
@@ -103,8 +103,8 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
             url,
             files={"file": open(filepath, "rb")},
             data={"ocr": "1"},
-            headers={"Authorization": "Bearer " + doc2x_api_key}
-        )
+            headers={"Authorization": "Bearer " + doc2x_api_key}, 
+        timeout=60)
         res_json = []
         if res.status_code == 200:
             decoded = res.content.decode("utf-8")
@@ -123,7 +123,7 @@ def 解析PDF_DOC2X_单文件(fp, project_folder, llm_kwargs, plugin_kwargs, cha
         chatbot.append((None, f"读取解析: {url} ..."))
         yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
 
-        res = requests.get(url, headers={"Authorization": "Bearer " + doc2x_api_key})
+        res = requests.get(url, headers={"Authorization": "Bearer " + doc2x_api_key}, timeout=60)
         md_zip_path = os.path.join(markdown_dir, gen_time_str() + '.zip')
         if res.status_code == 200:
             with open(md_zip_path, "wb") as f: f.write(res.content)

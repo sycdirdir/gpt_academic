@@ -29,14 +29,14 @@ def gen_image(llm_kwargs, prompt, resolution="1024x1024", model="dall-e-2", qual
         data['quality'] = quality
     if style is not None:
         data['style'] = style
-    response = requests.post(url, headers=headers, json=data, proxies=proxies)
+    response = requests.post(url, headers=headers, json=data, proxies=proxies, timeout=60)
     print(response.content)
     try:
         image_url = json.loads(response.content.decode('utf8'))['data'][0]['url']
     except:
         raise RuntimeError(response.content.decode())
     # 文件保存到本地
-    r = requests.get(image_url, proxies=proxies)
+    r = requests.get(image_url, proxies=proxies, timeout=60)
     file_path = f'{get_log_folder()}/image_gen/'
     os.makedirs(file_path, exist_ok=True)
     file_name = 'Image' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png'
@@ -75,14 +75,14 @@ def edit_image(llm_kwargs, prompt, image_path, resolution="1024x1024", model="da
             'size':     (None, resolution),
         }
 
-    response = requests.post(url, headers=headers, files=files, proxies=proxies)
+    response = requests.post(url, headers=headers, files=files, proxies=proxies, timeout=60)
     print(response.content)
     try:
         image_url = json.loads(response.content.decode('utf8'))['data'][0]['url']
     except:
         raise RuntimeError(response.content.decode())
     # 文件保存到本地
-    r = requests.get(image_url, proxies=proxies)
+    r = requests.get(image_url, proxies=proxies, timeout=60)
     file_path = f'{get_log_folder()}/image_gen/'
     os.makedirs(file_path, exist_ok=True)
     file_name = 'Image' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png'
