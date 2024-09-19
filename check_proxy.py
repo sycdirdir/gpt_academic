@@ -1,9 +1,10 @@
 
+from security import safe_requests
+
 def check_proxy(proxies):
-    import requests
     proxies_https = proxies['https'] if proxies is not None else '无'
     try:
-        response = requests.get("https://ipapi.co/json/", proxies=proxies, timeout=4)
+        response = safe_requests.get("https://ipapi.co/json/", proxies=proxies, timeout=4)
         data = response.json()
         if 'country_name' in data:
             country = data['country_name']
@@ -24,9 +25,9 @@ def check_proxy(proxies):
         return result
 
 def _check_with_backup_source(proxies):
-    import random, string, requests
+    import random, string
     random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
-    try: return requests.get(f"http://{random_string}.edns.ip-api.com/json", proxies=proxies, timeout=4).json()['dns']['geo']
+    try: return safe_requests.get(f"http://{random_string}.edns.ip-api.com/json", proxies=proxies, timeout=4).json()['dns']['geo']
     except: return None
 
 def backup_and_download(current_version, remote_version):
@@ -36,7 +37,6 @@ def backup_and_download(current_version, remote_version):
     from toolbox import get_conf
     import shutil
     import os
-    import requests
     import zipfile
     os.makedirs(f'./history', exist_ok=True)
     backup_dir = f'./history/backup-{current_version}/'
@@ -46,8 +46,8 @@ def backup_and_download(current_version, remote_version):
     os.makedirs(new_version_dir)
     shutil.copytree('./', backup_dir, ignore=lambda x, y: ['history'])
     proxies = get_conf('proxies')
-    try:    r = requests.get('https://github.com/binary-husky/chatgpt_academic/archive/refs/heads/master.zip', proxies=proxies, stream=True)
-    except: r = requests.get('https://public.agent-matrix.com/publish/master.zip', proxies=proxies, stream=True)
+    try:    r = safe_requests.get('https://github.com/binary-husky/chatgpt_academic/archive/refs/heads/master.zip', proxies=proxies, stream=True)
+    except: r = safe_requests.get('https://public.agent-matrix.com/publish/master.zip', proxies=proxies, stream=True)
     zip_file_path = backup_dir+'/master.zip'
     with open(zip_file_path, 'wb+') as f:
         f.write(r.content)
@@ -109,11 +109,10 @@ def auto_update(raise_error=False):
     """
     try:
         from toolbox import get_conf
-        import requests
         import json
         proxies = get_conf('proxies')
-        try:    response = requests.get("https://raw.githubusercontent.com/binary-husky/chatgpt_academic/master/version", proxies=proxies, timeout=5)
-        except: response = requests.get("https://public.agent-matrix.com/publish/version", proxies=proxies, timeout=5)
+        try:    response = safe_requests.get("https://raw.githubusercontent.com/binary-husky/chatgpt_academic/master/version", proxies=proxies, timeout=5)
+        except: response = safe_requests.get("https://public.agent-matrix.com/publish/version", proxies=proxies, timeout=5)
         remote_json_data = json.loads(response.text)
         remote_version = remote_json_data['version']
         if remote_json_data["show_feature"]:
