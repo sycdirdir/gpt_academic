@@ -2,6 +2,7 @@ from toolbox import update_ui, get_conf, trimmed_format_exc, get_max_token, Sing
 import threading
 import os
 import logging
+import secrets
 
 def input_clipping(inputs, history, max_token_limit):
     import numpy as np
@@ -189,7 +190,7 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
     输出 Returns:
         list: List of GPT model responses （每个子任务的输出汇总，如果某个子任务出错，response中会携带traceback报错信息，方便调试和定位问题。）
     """
-    import time, random
+    import time
     from concurrent.futures import ThreadPoolExecutor
     from request_llms.bridge_all import predict_no_ui_long_connection
     assert len(inputs_array) == len(history_array)
@@ -260,7 +261,7 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
                 if len(mutable[index][0]) > 0: gpt_say += "此线程失败前收到的回答：\n\n" + mutable[index][0]
                 if retry_op > 0:
                     retry_op -= 1
-                    wait = random.randint(5, 20)
+                    wait = secrets.SystemRandom().randint(5, 20)
                     if ("Rate limit reached" in tb_str) or ("Too Many Requests" in tb_str):
                         wait = wait * 3
                         fail_info = "OpenAI绑定信用卡可解除频率限制 "

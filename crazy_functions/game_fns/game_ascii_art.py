@@ -3,7 +3,7 @@ from crazy_functions.multi_stage.multi_stage_utils import GptAcademicGameBaseSta
 from crazy_functions.crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
 from request_llms.bridge_all import predict_no_ui_long_connection
 from crazy_functions.game_fns.game_utils import get_code_block, is_same_thing
-import random
+import secrets
 
 
 class MiniGame_ASCII_Art(GptAcademicGameBaseState):
@@ -24,7 +24,7 @@ class MiniGame_ASCII_Art(GptAcademicGameBaseState):
 
         if self.cur_task == 'draw':
             avail_obj = ["狗","猫","鸟","鱼","老鼠","蛇"]
-            self.obj = random.choice(avail_obj)
+            self.obj = secrets.choice(avail_obj)
             inputs = "I want to play a game called Guess the ASCII art. You can draw the ASCII art and I will try to guess it. " + \
                 f"This time you draw a {self.obj}. Note that you must not indicate what you have draw in the text, and you should only produce the ASCII art wrapped by ```. "
             raw_res = predict_no_ui_long_connection(inputs=inputs, llm_kwargs=self.llm_kwargs, history=[], sys_prompt="")

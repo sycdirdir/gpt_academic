@@ -1,3 +1,5 @@
+import secrets
+
 prompts_hs = """ 请以“{headstart}”为开头，编写一个小说的第一幕。
 
 - 尽量短，不要包含太多情节，因为你接下来将会与用户互动续写下面的情节，要留出足够的互动空间。
@@ -68,7 +70,6 @@ from crazy_functions.multi_stage.multi_stage_utils import GptAcademicGameBaseSta
 from crazy_functions.crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
 from request_llms.bridge_all import predict_no_ui_long_connection
 from crazy_functions.game_fns.game_utils import get_code_block, is_same_thing
-import random
 
 
 class MiniGame_ResumeStory(GptAcademicGameBaseState):
@@ -84,7 +85,7 @@ class MiniGame_ResumeStory(GptAcademicGameBaseState):
 
     def begin_game_step_0(self, prompt, chatbot, history):
         # init game at step 0
-        self.headstart = random.choice(self.story_headstart)
+        self.headstart = secrets.choice(self.story_headstart)
         self.story = []
         chatbot.append(["互动写故事", f"这次的故事开头是：{self.headstart}"])
         self.sys_prompt_ = '你是一个想象力丰富的杰出作家。正在与你的朋友互动，一起写故事，因此你每次写的故事段落应少于300字（结局除外）。'

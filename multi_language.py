@@ -35,6 +35,7 @@ import re
 import pickle
 import time
 from toolbox import get_conf
+import secrets
 
 CACHE_ONLY = os.environ.get('CACHE_ONLY', False)
 
@@ -192,8 +193,7 @@ def trans(word_to_translate, language, special=False):
         'max_length': None,
         'temperature':0.4,
     }
-    import random
-    N_EACH_REQ = random.randint(16, 32)
+    N_EACH_REQ = secrets.SystemRandom().randint(16, 32)
     word_to_translate_split = split_list(word_to_translate, N_EACH_REQ)
     inputs_array = [str(s) for s in word_to_translate_split]
     inputs_show_user_array = inputs_array
@@ -255,9 +255,8 @@ def trans_json(word_to_translate, language, special=False):
         'max_length': None,
         'temperature':0.4,
     }
-    import random
-    N_EACH_REQ = random.randint(16, 32)
-    random.shuffle(word_to_translate)
+    N_EACH_REQ = secrets.SystemRandom().randint(16, 32)
+    secrets.SystemRandom().shuffle(word_to_translate)
     word_to_translate_split = split_list(word_to_translate, N_EACH_REQ)
     inputs_array = [{k:"#" for k in s} for s in word_to_translate_split]
     inputs_array = [ json.dumps(i, ensure_ascii=False)  for i in inputs_array]
