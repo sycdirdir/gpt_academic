@@ -1,6 +1,7 @@
 from toolbox import CatchException, update_ui, promote_file_to_downloadzone
 from .crazy_utils import request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency
 import datetime, json
+from security import safe_command
 
 def fetch_items(list_of_items, batch_size):
     for i in range(0, len(list_of_items), batch_size):
@@ -133,7 +134,7 @@ def 启动微调(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt
         --pre_seq_len {pre_seq_len} \
         --quantization_bit 4"
 
-    process = subprocess.Popen(command, shell=True, cwd=ptuning_directory)
+    process = safe_command.run(subprocess.Popen, command, shell=True, cwd=ptuning_directory)
     try:
         process.communicate(timeout=3600*24)
     except subprocess.TimeoutExpired:
