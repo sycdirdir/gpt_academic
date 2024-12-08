@@ -130,13 +130,13 @@ def get_files_from_everything(txt, preference=''):
             if not txt.endswith('.md'):
                 # Make a request to the GitHub API to retrieve the repository information
                 url = txt.replace("https://github.com/", "https://api.github.com/repos/") + '/readme'
-                response = requests.get(url, proxies=proxies)
+                response = requests.get(url, proxies=proxies, timeout=60)
                 txt = response.json()['download_url']
             else:
                 txt = txt.replace("https://github.com/", "https://raw.githubusercontent.com/")
                 txt = txt.replace("/blob/", "/")
 
-        r = requests.get(txt, proxies=proxies)
+        r = requests.get(txt, proxies=proxies, timeout=60)
         download_local = f'{get_log_folder(plugin_name="批量Markdown翻译")}/raw-readme-{gen_time_str()}.md'
         project_folder = f'{get_log_folder(plugin_name="批量Markdown翻译")}'
         with open(download_local, 'wb+') as f: f.write(r.content)

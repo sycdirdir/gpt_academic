@@ -148,7 +148,7 @@ def arxiv_download(chatbot, history, txt, allow_cache=True):
     else:
         yield from update_ui_lastest_msg("开始下载", chatbot=chatbot, history=history)  # 刷新界面
         proxies = get_conf('proxies')
-        r = requests.get(url_tar, proxies=proxies)
+        r = requests.get(url_tar, proxies=proxies, timeout=60)
         with open(dst, 'wb+') as f:
             f.write(r.content)
     # <-------------- extract file ------------->
@@ -173,7 +173,7 @@ def pdf2tex_project(pdf_file_path):
     response = requests.post(url="https://api.mathpix.com/v3/pdf",
                              headers=headers,
                              data={"options_json": json.dumps(options)},
-                             files={"file": open(pdf_file_path, "rb")})
+                             files={"file": open(pdf_file_path, "rb")}, timeout=60)
 
     if response.ok:
         pdf_id = response.json()["pdf_id"]
@@ -181,7 +181,7 @@ def pdf2tex_project(pdf_file_path):
 
         # Step 2: Check processing status
         while True:
-            conversion_response = requests.get(f"https://api.mathpix.com/v3/pdf/{pdf_id}", headers=headers)
+            conversion_response = requests.get(f"https://api.mathpix.com/v3/pdf/{pdf_id}", headers=headers, timeout=60)
             conversion_data = conversion_response.json()
 
             if conversion_data["status"] == "completed":
@@ -199,7 +199,7 @@ def pdf2tex_project(pdf_file_path):
             os.makedirs(output_dir)
 
         url = f"https://api.mathpix.com/v3/pdf/{pdf_id}.tex"
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=60)
         file_name_wo_dot = '_'.join(os.path.basename(pdf_file_path).split('.')[:-1])
         output_name = f"{file_name_wo_dot}.tex.zip"
         output_path = os.path.join(output_dir, output_name)

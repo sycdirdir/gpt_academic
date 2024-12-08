@@ -46,8 +46,8 @@ def backup_and_download(current_version, remote_version):
     os.makedirs(new_version_dir)
     shutil.copytree('./', backup_dir, ignore=lambda x, y: ['history'])
     proxies = get_conf('proxies')
-    try:    r = requests.get('https://github.com/binary-husky/chatgpt_academic/archive/refs/heads/master.zip', proxies=proxies, stream=True)
-    except: r = requests.get('https://public.agent-matrix.com/publish/master.zip', proxies=proxies, stream=True)
+    try:    r = requests.get('https://github.com/binary-husky/chatgpt_academic/archive/refs/heads/master.zip', proxies=proxies, stream=True, timeout=60)
+    except: r = requests.get('https://public.agent-matrix.com/publish/master.zip', proxies=proxies, stream=True, timeout=60)
     zip_file_path = backup_dir+'/master.zip'
     with open(zip_file_path, 'wb+') as f:
         f.write(r.content)

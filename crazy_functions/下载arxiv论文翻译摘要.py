@@ -44,7 +44,7 @@ def download_arxiv_(url_pdf):
 
     print('下载中')
     proxies = get_conf('proxies')
-    r = requests.get(requests_pdf_url, proxies=proxies)
+    r = requests.get(requests_pdf_url, proxies=proxies, timeout=60)
     with open(file_path, 'wb+') as f:
         f.write(r.content)
     print('下载完成')
@@ -78,7 +78,7 @@ def get_name(_url_):
     #     return arxiv_recall[_url_]
 
     proxies = get_conf('proxies')
-    res = requests.get(_url_, proxies=proxies)
+    res = requests.get(_url_, proxies=proxies, timeout=60)
 
     bs = BeautifulSoup(res.text, 'html.parser')
     other_details = {}
