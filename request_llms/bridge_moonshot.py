@@ -101,7 +101,7 @@ class MoonShotInit:
 
     def generate_messages(self, inputs, llm_kwargs, history, system_prompt, stream):
         payload, headers = self.generate_payload(inputs, llm_kwargs, history, system_prompt, stream)
-        response = requests.post(self.url, headers=headers, json=payload, stream=stream)
+        response = requests.post(self.url, headers=headers, json=payload, stream=stream, timeout=60)
 
         chunk_content = ""
         gpt_bro_result = ""
