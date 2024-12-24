@@ -12,6 +12,7 @@ from crazy_functions.crazy_utils import request_gpt_model_in_new_thread_with_ui_
 from request_llms.bridge_all import model_info
 from request_llms.bridge_all import predict_no_ui_long_connection
 from crazy_functions.prompts.internet import SearchOptimizerPrompt, SearchAcademicOptimizerPrompt
+from security import safe_requests
 
 def search_optimizer(
     query,
@@ -180,7 +181,7 @@ def scrape_text(url, proxies) -> str:
         'Content-Type': 'text/plain',
     }
     try:
-        response = requests.get(url, headers=headers, proxies=proxies, timeout=8)
+        response = safe_requests.get(url, headers=headers, proxies=proxies, timeout=8)
         if response.encoding == "ISO-8859-1": response.encoding = response.apparent_encoding
     except:
         return "无法连接到该网页"

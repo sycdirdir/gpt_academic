@@ -7,6 +7,7 @@ from shared_utils.colorful import *
 from loguru import logger
 import os
 import time
+from security import safe_requests
 
 def refresh_key(doc2x_api_key):
     import requests, json
@@ -61,7 +62,7 @@ def 解析PDF_DOC2X(pdf_file_path, format='tex'):
     logger.info("Doc2x 第2步：轮询等待")
     params = {'uid': uuid}
     while True:
-        res = requests.get(
+        res = safe_requests.get(
             'https://v2.doc2x.noedgeai.com/api/v2/parse/status',
             headers={"Authorization": "Bearer " + doc2x_api_key},
             params=params
@@ -99,7 +100,7 @@ def 解析PDF_DOC2X(pdf_file_path, format='tex'):
     logger.info("Doc2x 第4步：等待结果")
     params = {'uid': uuid}
     while True:
-        res = requests.get(
+        res = safe_requests.get(
             'https://v2.doc2x.noedgeai.com/api/v2/convert/parse/result',
             headers={"Authorization": "Bearer " + doc2x_api_key},
             params=params
@@ -128,7 +129,7 @@ def 解析PDF_DOC2X(pdf_file_path, format='tex'):
     for attempt in range(max_attempt):
         try:
             result_url = res_json['data']['url']
-            res = requests.get(result_url)
+            res = safe_requests.get(result_url)
             zip_path = os.path.join(target_path, gen_time_str() + '.zip')
             unzip_path = os.path.join(target_path, gen_time_str())
             if res.status_code == 200:
