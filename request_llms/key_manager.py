@@ -1,4 +1,4 @@
-import random
+import secrets
 
 def Singleton(cls):
     _instance = {}
@@ -25,5 +25,5 @@ class OpenAI_ApiKeyManager():
         available_keys = [key for key in key_list if key not in self.key_black_list]
         if not available_keys:
             raise KeyError("No available key found.")
-        selected_key = random.choice(available_keys)
+        selected_key = secrets.choice(available_keys)
         return selected_key

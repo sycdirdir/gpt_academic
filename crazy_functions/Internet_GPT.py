@@ -1,5 +1,4 @@
 import requests
-import random
 import time
 import re
 import json
@@ -12,6 +11,7 @@ from crazy_functions.crazy_utils import request_gpt_model_in_new_thread_with_ui_
 from request_llms.bridge_all import model_info
 from request_llms.bridge_all import predict_no_ui_long_connection
 from crazy_functions.prompts.internet import SearchOptimizerPrompt, SearchAcademicOptimizerPrompt
+import secrets
 
 def search_optimizer(
     query,
@@ -109,14 +109,14 @@ def search_optimizer(
 def get_auth_ip():
     ip = check_proxy(None, return_ip=True)
     if ip is None:
-        return '114.114.114.' + str(random.randint(1, 10))
+        return '114.114.114.' + str(secrets.SystemRandom().randint(1, 10))
     return ip
 
 
 def searxng_request(query, proxies, categories='general', searxng_url=None, engines=None):
     if searxng_url is None:
         urls = get_conf("SEARXNG_URLS")
-        url = random.choice(urls)
+        url = secrets.choice(urls)
     else:
         url = searxng_url
 
