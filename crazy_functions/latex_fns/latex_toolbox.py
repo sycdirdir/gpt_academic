@@ -3,6 +3,7 @@ import re
 import shutil
 import numpy as np
 from loguru import logger
+from security import safe_command
 
 PRESERVE = 0
 TRANSFORM = 1
@@ -595,8 +596,7 @@ def fix_content(final_tex, node_string):
 def compile_latex_with_timeout(command, cwd, timeout=60):
     import subprocess
 
-    process = subprocess.Popen(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
+    process = safe_command.run(subprocess.Popen, command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
     )
     try:
         stdout, stderr = process.communicate(timeout=timeout)
