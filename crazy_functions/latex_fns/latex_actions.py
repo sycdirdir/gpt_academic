@@ -519,7 +519,7 @@ def check_gptac_cloud(arxiv_id, chatbot):
                 'arxiv_id': arxiv_id,
                 'name': pdf_target,
             }
-            resp = requests.post(url=url, data=data)
+            resp = requests.post(url=url, data=data, timeout=60)
             cache_hit_result = resp.text.strip('"')
             if cache_hit_result.startswith("http"):
                 url = cache_hit_result

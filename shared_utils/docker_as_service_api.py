@@ -49,7 +49,7 @@ def stream_daas(docker_service_api_com_model, server_url, save_file_dir):
     files = {'file': ('docker_service_api_com_model.pkl', file_obj, 'application/octet-stream')}
 
     # Send the POST request
-    response = requests.post(server_url, files=files, stream=True)
+    response = requests.post(server_url, files=files, stream=True, timeout=60)
 
     max_full_package_size = 1024 * 1024 * 1024 * 1  # 1 GB
 

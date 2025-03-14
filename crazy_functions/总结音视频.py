@@ -80,7 +80,7 @@ def AnalyAudio(parse_prompt, file_manifest, llm_kwargs, chatbot, history):
             chatbot.append([f"将 {i} 发送到openai音频解析终端 (whisper)，当前参数：{parse_prompt}", "正在处理 ..."])
             yield from update_ui(chatbot=chatbot, history=history)  # 刷新界面
             proxies = get_conf('proxies')
-            response = requests.post(url, headers=headers, files=files, data=data, proxies=proxies).text
+            response = requests.post(url, headers=headers, files=files, data=data, proxies=proxies, timeout=60).text
 
             chatbot.append(["音频解析结果", response])
             history.extend(["音频解析结果", response])
