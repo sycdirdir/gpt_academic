@@ -1,9 +1,10 @@
-import re, requests, unicodedata, os
+import re, unicodedata, os
 from toolbox import update_ui, get_log_folder
 from toolbox import write_history_to_file, promote_file_to_downloadzone
 from toolbox import CatchException, report_exception, get_conf
 from crazy_functions.crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
 from loguru import logger
+from security import safe_requests
 
 def download_arxiv_(url_pdf):
     if 'arxiv.org' not in url_pdf:
@@ -46,7 +47,7 @@ def download_arxiv_(url_pdf):
 
     logger.info('下载中')
     proxies = get_conf('proxies')
-    r = requests.get(requests_pdf_url, proxies=proxies)
+    r = safe_requests.get(requests_pdf_url, proxies=proxies)
     with open(file_path, 'wb+') as f:
         f.write(r.content)
     logger.info('下载完成')
@@ -67,7 +68,7 @@ def get_name(_url_):
     logger.info(_url_)
 
     proxies = get_conf('proxies')
-    res = requests.get(_url_, proxies=proxies)
+    res = safe_requests.get(_url_, proxies=proxies)
 
     bs = BeautifulSoup(res.text, 'html.parser')
     other_details = {}

@@ -11,6 +11,7 @@ from crazy_functions.latex_fns.latex_toolbox import reverse_forbidden_text_caref
 from crazy_functions.latex_fns.latex_toolbox import fix_content, find_main_tex_file, merge_tex_files, compile_latex_with_timeout
 from crazy_functions.latex_fns.latex_toolbox import find_title_and_abs
 from crazy_functions.latex_fns.latex_pickle_io import objdump, objload
+from security import safe_requests
 
 
 pj = os.path.join
@@ -524,7 +525,7 @@ def check_gptac_cloud(arxiv_id, chatbot):
             if cache_hit_result.startswith("http"):
                 url = cache_hit_result
                 logger.info(f'Downloading from GPTAC cloud: {url}')
-                resp = requests.get(url=url, timeout=30)
+                resp = safe_requests.get(url=url, timeout=30)
                 target = os.path.join(get_log_folder(plugin_name='gptac_cloud'), gen_time_str(), pdf_target)
                 os.makedirs(os.path.dirname(target), exist_ok=True)
                 with open(target, 'wb') as f:
