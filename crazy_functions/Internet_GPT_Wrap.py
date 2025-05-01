@@ -1,7 +1,7 @@
-import random
 from toolbox import get_conf
 from crazy_functions.Internet_GPT import 连接网络回答问题
 from crazy_functions.plugin_template.plugin_class_template import GptAcademicPluginTemplate, ArgProperty
+import secrets
 
 
 class NetworkGPT_Wrap(GptAcademicPluginTemplate):
@@ -21,7 +21,7 @@ class NetworkGPT_Wrap(GptAcademicPluginTemplate):
 
         """
         urls = get_conf("SEARXNG_URLS")
-        url = random.choice(urls)
+        url = secrets.choice(urls)
 
         gui_definition = {
             "main_input":

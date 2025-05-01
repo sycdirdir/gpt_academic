@@ -4,6 +4,8 @@
 https://github.com/acheong08/EdgeGPT
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 """
+import secrets
+
 """
 Main.py
 """
@@ -12,7 +14,6 @@ import argparse
 import asyncio
 import json
 import os
-import random
 import re
 import ssl
 import sys
@@ -41,7 +42,7 @@ DELIMITER = "\x1e"
 
 # Generate random IP between range 13.104.0.0/14
 FORWARDED_IP = (
-    f"13.{random.randint(104, 107)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
+    f"13.{secrets.SystemRandom().randint(104, 107)}.{secrets.SystemRandom().randint(0, 255)}.{secrets.SystemRandom().randint(0, 255)}"
 )
 
 HEADERS = {
@@ -170,7 +171,7 @@ def _get_ran_hex(length: int = 32) -> str:
     """
     Returns random hex string
     """
-    return "".join(random.choice("0123456789abcdef") for _ in range(length))
+    return "".join(secrets.choice("0123456789abcdef") for _ in range(length))
 
 
 class _ChatHubRequest:

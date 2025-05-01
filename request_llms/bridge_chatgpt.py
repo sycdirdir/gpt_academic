@@ -14,7 +14,6 @@ import re
 import time
 import traceback
 import requests
-import random
 
 from loguru import logger
 
@@ -23,6 +22,8 @@ from loguru import logger
 from toolbox import get_conf, update_ui, is_any_api_key, select_api_key, what_keys, clip_history
 from toolbox import trimmed_format_exc, is_the_upload_folder, read_one_api_model_name, log_chat
 from toolbox import ChatBotWithCookies, have_any_recent_upload_image_files, encode_image
+import secrets
+
 proxies, TIMEOUT_SECONDS, MAX_RETRY, API_ORG, AZURE_CFG_ARRAY = \
     get_conf('proxies', 'TIMEOUT_SECONDS', 'MAX_RETRY', 'API_ORG', 'AZURE_CFG_ARRAY')
 
@@ -519,7 +520,7 @@ def generate_payload(inputs:str, llm_kwargs:dict, history:list, system_prompt:st
         model = llm_kwargs['llm_model'][len('vllm-'):]
         model, _ = read_one_api_model_name(model)
     if model == "gpt-3.5-random": # 随机选择, 绕过openai访问频率限制
-        model = random.choice([
+        model = secrets.choice([
             "gpt-3.5-turbo",
             "gpt-3.5-turbo-16k",
             "gpt-3.5-turbo-1106",
