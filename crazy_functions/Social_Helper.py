@@ -7,6 +7,7 @@ from crazy_functions.json_fns.select_tool import structure_output, select_tool
 from pydantic import BaseModel, Field
 from loguru import logger
 from typing import List
+import fickling
 
 
 SOCIAL_NETWOK_WORKER_REGISTER = {}
@@ -41,7 +42,7 @@ class SaveAndLoad():
         if checkpoint_dir is None: checkpoint_dir = self.checkpoint_dir
         if self.does_checkpoint_exist(checkpoint_dir=checkpoint_dir):
             with open(os.path.join(checkpoint_dir, 'social_network.pkl'), "rb") as f:
-                social_network = pickle.load(f)
+                social_network = fickling.load(f)
                 return social_network
         else:
             return SocialNetwork()

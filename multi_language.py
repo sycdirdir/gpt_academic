@@ -35,6 +35,7 @@ import re
 import pickle
 import time
 from toolbox import get_conf
+import fickling
 
 CACHE_ONLY = os.environ.get('CACHE_ONLY', False)
 
@@ -117,7 +118,7 @@ def lru_file_cache(maxsize=128, ttl=None, filename=None):
 
         if cache_path is not None and os.path.exists(cache_path):
             with open(cache_path, "rb") as f:
-                cache = pickle.load(f)
+                cache = fickling.load(f)
             _cache_info["currsize"] = len(cache)
 
         return wrapper_function
