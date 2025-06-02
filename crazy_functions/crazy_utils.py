@@ -3,6 +3,7 @@ import threading
 from loguru import logger
 from shared_utils.char_visual_effect import scolling_visual_effect
 from toolbox import update_ui, get_conf, trimmed_format_exc, get_max_token, Singleton
+from security import safe_command
 
 def input_clipping(inputs, history, max_token_limit, return_clip_flags=False):
     """
@@ -598,7 +599,7 @@ class nougat_interface():
         from toolbox import ProxyNetworkActivate
         logger.info(f'正在执行命令 {command}')
         with ProxyNetworkActivate("Nougat_Download"):
-            process = subprocess.Popen(command, shell=False, cwd=cwd, env=os.environ)
+            process = safe_command.run(subprocess.Popen, command, shell=False, cwd=cwd, env=os.environ)
         try:
             stdout, stderr = process.communicate(timeout=timeout)
         except subprocess.TimeoutExpired:
