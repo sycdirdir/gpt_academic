@@ -13,8 +13,8 @@ def refresh_key(doc2x_api_key):
     url = "https://api.doc2x.noedgeai.com/api/token/refresh"
     res = requests.post(
         url,
-        headers={"Authorization": "Bearer " + doc2x_api_key}
-    )
+        headers={"Authorization": "Bearer " + doc2x_api_key}, 
+    timeout=60)
     res_json = []
     if res.status_code == 200:
         decoded = res.content.decode("utf-8")
@@ -48,8 +48,8 @@ def 解析PDF_DOC2X(pdf_file_path, format='tex'):
         res = requests.post(
             "https://v2.doc2x.noedgeai.com/api/v2/parse/pdf",
             headers={"Authorization": "Bearer " + doc2x_api_key},
-            data=file
-        )
+            data=file, 
+        timeout=60)
     # res_json = []
     if res.status_code == 200:
         res_json = res.json()
@@ -64,8 +64,8 @@ def 解析PDF_DOC2X(pdf_file_path, format='tex'):
         res = requests.get(
             'https://v2.doc2x.noedgeai.com/api/v2/parse/status',
             headers={"Authorization": "Bearer " + doc2x_api_key},
-            params=params
-        )
+            params=params, 
+        timeout=60)
         res_json = res.json()
         if res_json['data']['status'] == "success":
             break
@@ -87,8 +87,8 @@ def 解析PDF_DOC2X(pdf_file_path, format='tex'):
     res = requests.post(
         'https://v2.doc2x.noedgeai.com/api/v2/convert/parse',
         headers={"Authorization": "Bearer " + doc2x_api_key},
-        json=data
-    )
+        json=data, 
+    timeout=60)
     if res.status_code == 200:
         res_json = res.json()
     else:
@@ -102,8 +102,8 @@ def 解析PDF_DOC2X(pdf_file_path, format='tex'):
         res = requests.get(
             'https://v2.doc2x.noedgeai.com/api/v2/convert/parse/result',
             headers={"Authorization": "Bearer " + doc2x_api_key},
-            params=params
-        )
+            params=params, 
+        timeout=60)
         res_json = res.json()
         if res_json['data']['status'] == "success":
             break
@@ -128,7 +128,7 @@ def 解析PDF_DOC2X(pdf_file_path, format='tex'):
     for attempt in range(max_attempt):
         try:
             result_url = res_json['data']['url']
-            res = requests.get(result_url)
+            res = requests.get(result_url, timeout=60)
             zip_path = os.path.join(target_path, gen_time_str() + '.zip')
             unzip_path = os.path.join(target_path, gen_time_str())
             if res.status_code == 200:
