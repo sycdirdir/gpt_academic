@@ -1,4 +1,5 @@
 from loguru import logger
+from security import safe_requests
 
 def check_proxy(proxies, return_ip=False):
     """
@@ -11,11 +12,10 @@ def check_proxy(proxies, return_ip=False):
     Returns:
         str or None: 检查的结果信息或代理的IP地址（如果`return_ip`为True）。
     """
-    import requests
     proxies_https = proxies['https'] if proxies is not None else '无'
     ip = None
     try:
-        response = requests.get("https://ipapi.co/json/", proxies=proxies, timeout=4)  # ⭐ 执行GET请求以获取代理信息
+        response = safe_requests.get("https://ipapi.co/json/", proxies=proxies, timeout=4)  # ⭐ 执行GET请求以获取代理信息
         data = response.json()
         if 'country_name' in data:
             country = data['country_name']
@@ -54,10 +54,10 @@ def _check_with_backup_source(proxies):
     Returns:
         tuple: 代理信息(geo)和IP地址(ip)的元组。
     """
-    import random, string, requests
+    import random, string
     random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
     try:
-        res_json = requests.get(f"http://{random_string}.edns.ip-api.com/json", proxies=proxies, timeout=4).json()  # ⭐ 执行代理检查和备份源请求
+        res_json = safe_requests.get(f"http://{random_string}.edns.ip-api.com/json", proxies=proxies, timeout=4).json()  # ⭐ 执行代理检查和备份源请求
         return res_json['dns']['geo'], res_json['dns']['ip']
     except:
         return None, None
@@ -76,7 +76,6 @@ def backup_and_download(current_version, remote_version):
     from toolbox import get_conf
     import shutil
     import os
-    import requests
     import zipfile
     os.makedirs(f'./history', exist_ok=True)
     backup_dir = f'./history/backup-{current_version}/'
@@ -86,8 +85,8 @@ def backup_and_download(current_version, remote_version):
     os.makedirs(new_version_dir)
     shutil.copytree('./', backup_dir, ignore=lambda x, y: ['history'])
     proxies = get_conf('proxies')
-    try:    r = requests.get('https://github.com/binary-husky/chatgpt_academic/archive/refs/heads/master.zip', proxies=proxies, stream=True)
-    except: r = requests.get('https://public.agent-matrix.com/publish/master.zip', proxies=proxies, stream=True)
+    try:    r = safe_requests.get('https://github.com/binary-husky/chatgpt_academic/archive/refs/heads/master.zip', proxies=proxies, stream=True)
+    except: r = safe_requests.get('https://public.agent-matrix.com/publish/master.zip', proxies=proxies, stream=True)
     zip_file_path = backup_dir+'/master.zip'  # ⭐ 保存备份文件的路径
     with open(zip_file_path, 'wb+') as f:
         f.write(r.content)
@@ -177,11 +176,10 @@ def auto_update(raise_error=False):
     """
     try:
         from toolbox import get_conf
-        import requests
         import json
         proxies = get_conf('proxies')
-        try:    response = requests.get("https://raw.githubusercontent.com/binary-husky/chatgpt_academic/master/version", proxies=proxies, timeout=5)
-        except: response = requests.get("https://public.agent-matrix.com/publish/version", proxies=proxies, timeout=5)
+        try:    response = safe_requests.get("https://raw.githubusercontent.com/binary-husky/chatgpt_academic/master/version", proxies=proxies, timeout=5)
+        except: response = safe_requests.get("https://public.agent-matrix.com/publish/version", proxies=proxies, timeout=5)
         remote_json_data = json.loads(response.text)
         remote_version = remote_json_data['version']
         if remote_json_data["show_feature"]:

@@ -4,6 +4,7 @@ from functools import partial
 from loguru import logger
 
 import glob, os, requests, time, json, tarfile, threading
+from security import safe_requests
 
 pj = os.path.join
 ARXIV_CACHE_DIR = get_conf("ARXIV_CACHE_DIR")
@@ -148,7 +149,7 @@ def arxiv_download(chatbot, history, txt, allow_cache=True):
         # for url_tar in [url_.replace('/abs/', '/e-print/'), url_.replace('/abs/', '/src/')]:
         for url_tar in [url_.replace('/abs/', '/src/'), url_.replace('/abs/', '/e-print/')]:
             proxies = get_conf('proxies')
-            r = requests.get(url_tar, proxies=proxies)
+            r = safe_requests.get(url_tar, proxies=proxies)
             if r.status_code == 200:
                 with open(dst, 'wb+') as f:
                     f.write(r.content)
@@ -202,7 +203,7 @@ def pdf2tex_project(pdf_file_path, plugin_kwargs):
 
             # Step 2: Check processing status
             while True:
-                conversion_response = requests.get(f"https://api.mathpix.com/v3/pdf/{pdf_id}", headers=headers)
+                conversion_response = safe_requests.get(f"https://api.mathpix.com/v3/pdf/{pdf_id}", headers=headers)
                 conversion_data = conversion_response.json()
 
                 if conversion_data["status"] == "completed":
@@ -220,7 +221,7 @@ def pdf2tex_project(pdf_file_path, plugin_kwargs):
                 os.makedirs(output_dir)
 
             url = f"https://api.mathpix.com/v3/pdf/{pdf_id}.tex"
-            response = requests.get(url, headers=headers)
+            response = safe_requests.get(url, headers=headers)
             file_name_wo_dot = '_'.join(os.path.basename(pdf_file_path).split('.')[:-1])
             output_name = f"{file_name_wo_dot}.tex.zip"
             output_path = os.path.join(output_dir, output_name)

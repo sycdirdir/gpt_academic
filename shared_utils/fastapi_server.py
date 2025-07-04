@@ -44,8 +44,9 @@ queue cocurrent effectiveness
     -- websocket(yes)
 """
 
-import os, requests, threading, time
+import os, threading, time
 import uvicorn
+from security import safe_requests
 
 def validate_path_safety(path_or_url, user):
     from toolbox import get_conf, default_user_name
@@ -317,6 +318,6 @@ def start_app(app_block, CONCURRENT_COUNT, AUTHENTICATION, PORT, SSL_KEYFILE, SS
         "http": "",
         "https": "",
     }
-    requests.get(f"{app_block.local_url}startup-events", verify=app_block.ssl_verify, proxies=forbid_proxies)
+    safe_requests.get(f"{app_block.local_url}startup-events", verify=app_block.ssl_verify, proxies=forbid_proxies)
     app_block.is_running = True
     app_block.block_thread()
