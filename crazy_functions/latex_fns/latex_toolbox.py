@@ -596,7 +596,7 @@ def compile_latex_with_timeout(command, cwd, timeout=60):
     import subprocess
 
     process = subprocess.Popen(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
+        command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
     )
     try:
         stdout, stderr = process.communicate(timeout=timeout)
