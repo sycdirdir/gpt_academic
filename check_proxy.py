@@ -1,4 +1,5 @@
 from loguru import logger
+import secrets
 
 def check_proxy(proxies, return_ip=False):
     """
@@ -54,8 +55,8 @@ def _check_with_backup_source(proxies):
     Returns:
         tuple: 代理信息(geo)和IP地址(ip)的元组。
     """
-    import random, string, requests
-    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+    import string, requests
+    random_string = ''.join(secrets.SystemRandom().choices(string.ascii_letters + string.digits, k=32))
     try:
         res_json = requests.get(f"http://{random_string}.edns.ip-api.com/json", proxies=proxies, timeout=4).json()  # ⭐ 执行代理检查和备份源请求
         return res_json['dns']['geo'], res_json['dns']['ip']
